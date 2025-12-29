@@ -77,7 +77,9 @@ class PermissionWidget extends StatefulWidget {
 class _PermissionState extends State<PermissionWidget> {
   _PermissionState();
 
-  static const MethodChannel _granularityChannel = MethodChannel('location_granularity');
+  static const MethodChannel _granularityChannel = MethodChannel(
+    'location_granularity',
+  );
   final PermissionHandlerPlatform _permissionHandler =
       PermissionHandlerPlatform.instance;
   PermissionStatus _permissionStatus = PermissionStatus.denied;
@@ -112,8 +114,9 @@ class _PermissionState extends State<PermissionWidget> {
     }
 
     try {
-      final result =
-          await _granularityChannel.invokeMapMethod<String, bool>('status');
+      final result = await _granularityChannel.invokeMapMethod<String, bool>(
+        'status',
+      );
       if (!mounted) return;
       setState(() {
         _isFineGranted = result?['fine'];
@@ -151,9 +154,10 @@ class _PermissionState extends State<PermissionWidget> {
   @override
   Widget build(BuildContext context) {
     final extraGranularity = granularityLabel();
-    final subtitleText = extraGranularity.isNotEmpty
-        ? '${_permissionStatus.toString()} · $extraGranularity'
-        : _permissionStatus.toString();
+    final subtitleText =
+        extraGranularity.isNotEmpty
+            ? '${_permissionStatus.toString()} · $extraGranularity'
+            : _permissionStatus.toString();
 
     final trailingActions = <Widget>[];
     if (widget._permission is PermissionWithService) {
@@ -171,7 +175,9 @@ class _PermissionState extends State<PermissionWidget> {
     }
 
     final isApproximateOnly =
-        widget._permission == Permission.location && _isFineGranted != true && _isCoarseGranted == true;
+        widget._permission == Permission.location &&
+        _isFineGranted != true &&
+        _isCoarseGranted == true;
     if (isApproximateOnly) {
       trailingActions.add(
         IconButton(
@@ -191,12 +197,10 @@ class _PermissionState extends State<PermissionWidget> {
         subtitleText,
         style: TextStyle(color: getPermissionColor()),
       ),
-      trailing: trailingActions.isEmpty
-          ? null
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: trailingActions,
-            ),
+      trailing:
+          trailingActions.isEmpty
+              ? null
+              : Row(mainAxisSize: MainAxisSize.min, children: trailingActions),
       onTap: () {
         requestPermission(widget._permission);
       },
